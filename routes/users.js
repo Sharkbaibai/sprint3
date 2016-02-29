@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var i18n = require('i18n');
-var filter = require('./plugin/filter');
+var filter = require('../plugin/filter');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {

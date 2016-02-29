@@ -4,7 +4,7 @@
 var express = require('express');
 var router = express.Router();
 var i18n = require('i18n');
-var filter = require('./plugin/filter');
+var filter = require('../plugin/filter');
 
 /* Test. */
 router.get('/', filter.authorize ,function(req, res, next) {
