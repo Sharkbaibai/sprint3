@@ -10,8 +10,12 @@ var users = require('./routes/users');
 var author = require('./routes/author');
 var i18n = require("i18n");
 
+// For store session in redis
 var session = require('express-session');
-var RedisStore = require('connect-redis')(session);
+// If you wanna to store session in external DB such as Redis.
+//var RedisStore = require('connect-redis')(session);
+const MongoStore = require('connect-mongo')(session);
+
 
 
 // International plugin
@@ -26,7 +30,7 @@ i18n.configure({
 	dafaultLocales : 'en',
 	
 	//sets a custom cookie name to parse locale setting from -defaults to NULL
-	cookie:'spring3',
+	cookie:'sprint3',
 	
 	// where to store json files -defualts to './locales' relative to modules
 	directory : './locales',
@@ -50,18 +54,19 @@ i18n.configure({
 var app = express();
 
 // Initial session
-var option = {
-	"host":"127.0.0.1",
-	"port":"6379",
+var sessionOptions = {
+	secret : "secret",
+	resave : false,
+	saveUninitialiezed:false,
+	store : new MongoStore(url:"mongodb://localhost/test"),
+	cookie : {secure : true}
+	//"host":"127.0.0.1",
+	//"port":"6379",
 	//ttl": 60*60*24*30 //30 days.
-	"ttl": 60*60
+	//"ttl": 60*60
 };
 
-app.use(session({
-	store: new RedisStore(option),
-	secret:'Haliluyaaaaa!'
-}));
-
+app.use(sessionOptions)
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
