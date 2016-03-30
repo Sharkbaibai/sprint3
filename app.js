@@ -10,11 +10,12 @@ var users = require('./routes/users');
 var author = require('./routes/author');
 var i18n = require("i18n");
 
-// For store session in redis
-var session = require('express-session');
+// For store session in redis session = require('express-session');
 // If you wanna to store session in external DB such as Redis.
 //var RedisStore = require('connect-redis')(session);
-const MongoStore = require('connect-mongo')(session);
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
+const mongoose = require('mongoose');
 
 
 
@@ -53,20 +54,29 @@ i18n.configure({
 
 var app = express();
 
-// Initial session
+//Set mongoose which is connecting MongoDB.
+//var connectOptions = {url:"mongodb://Sam:111111@localhost:27017/test"};
+var connectOptions = {url:"mongodb://localhost:27017/test"};
+const db = mongoose.createConnection(connectOptions);;
+
+db.on('open',function(){
+})
+
+// Initial session options
 var sessionOptions = {
 	secret : "secret",
 	resave : false,
 	saveUninitialiezed:false,
-	store : new MongoStore(url:"mongodb://localhost/test"),
-	cookie : {secure : true}
+	//store : new MongoStore(url:"mongodb://localhost/test"),
+	store : new MongoStore({mongooseConnection : db}),
+	cookie : {secure : true},
 	//"host":"127.0.0.1",
 	//"port":"6379",
 	//ttl": 60*60*24*30 //30 days.
-	//"ttl": 60*60
+	"ttl": 60 //60 seconds. 
 };
 
-app.use(sessionOptions)
+app.use(session(sessionOptions));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -118,3 +128,4 @@ app.use(function(err, req, res, next) {
 
 
 module.exports = app;
+
