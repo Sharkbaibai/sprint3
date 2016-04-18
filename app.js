@@ -48,6 +48,7 @@ i18n.configure({
 	//setting of log level DEBUG - dafault to require('debug')('i18n:debug')
 	logDebugFn: function(msg){
 		console.log('debug',msg);
+		console.log('debug',"--------International loading---------" );
 	}
 	
 })
@@ -56,8 +57,9 @@ var app = express();
 
 //Set mongoose which is connecting MongoDB.
 //var connectOptions = {url:"mongodb://Sam:111111@localhost:27017/test"};
-var connectOptions = {url:"mongodb://localhost:27017/test"};
-const db = mongoose.createConnection(connectOptions);;
+//var connectOptions = {url:'mongodb://root:root123@127.0.0.1:27017/sprint3'};
+//var db = mongoose.createConnection(connectOptions);
+var db = mongoose.createConnection('mongodb://root:root123@127.0.0.1:27017/sprint3');
 
 db.on('open',function(){
 })
