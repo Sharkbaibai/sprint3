@@ -66,6 +66,8 @@ db.on('open',function(){
 
 // Initial session options
 var sessionOptions = {
+	genid : function(req){
+	},
 	secret : "secret",
 	resave : false,
 	saveUninitialiezed:false,
