@@ -1,7 +1,8 @@
 var express = require('express');
+var http = require('http');
 var path = require('path');
 var favicon = require('serve-favicon');
-var logger = require('morgan');
+//var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
@@ -9,6 +10,31 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var author = require('./routes/author');
 var i18n = require("i18n");
+
+var app = express();
+
+
+app.set('port', process.env.PORT || 3000);
+http.createServer(app).listen(app.get('port'), function(){
+  console.log( 'Express started in ' + app.get('env') +
+    ' mode on http://localhost:' + app.get('port') +
+    '; press Ctrl-C to terminate.' );
+});
+
+
+// Require a nessesary logger based on env!
+switch(app.get('env')){
+    case 'development':
+    	// compact, colorful dev logging
+    	app.use(require('morgan')('dev'));
+        break;
+    case 'production':
+        // module 'express-logger' supports daily log rotation
+        app.use(require('express-logger')({ path: __dirname + '/log/requests.log'}));
+        break;
+}
+
+
 
 // For store session in redis session = require('express-session');
 // If you wanna to store session in external DB such as Redis.
@@ -53,8 +79,6 @@ i18n.configure({
 	
 })
 
-var app = express();
-
 //Set mongoose which is connecting MongoDB.
 //var connectOptions = {url:"mongodb://Sam:111111@localhost:27017/test"};
 //var connectOptions = {url:'mongodb://root:root123@127.0.0.1:27017/sprint3'};
@@ -67,6 +91,7 @@ db.on('open',function(){
 // Initial session options
 var sessionOptions = {
 	genid : function(req){
+		return genuuid()
 	},
 	secret : "secret",
 	resave : false,
@@ -88,7 +113,7 @@ app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+//app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
